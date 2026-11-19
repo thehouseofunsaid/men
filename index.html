@@ -15,8 +15,22 @@ html,body{width:100%;height:100%;overflow:hidden;background:#2e0c05;touch-action
 @keyframes spin{to{transform:rotate(360deg)}}
 #hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:16vh}
 #gl{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
-#tint{position:fixed;inset:0;opacity:0;transition:opacity 1.2s;pointer-events:none}
-#tint.on{opacity:1}
+/* ===== full-screen photo (cover + finale) ===== */
+#pb{position:fixed;inset:0;overflow:hidden;opacity:0;transition:opacity 1.2s;pointer-events:none;background:#ffd224}
+#pb.on{opacity:1}
+@keyframes kb{0%{transform:scale(1)}100%{transform:scale(1.12) translate(-1%,-1.5%)}}
+#pbWrap{position:absolute;inset:0;transform-origin:50% 75%;animation:kb 18s ease-in-out infinite alternate;filter:brightness(.35) saturate(.6);transition:transform 1.4s cubic-bezier(.6,0,.4,1),filter 3s ease-out}
+#pb.lit #pbWrap{filter:none}
+#pb.go #pbWrap{animation:none;transform:scale(3)}
+#pbImg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 85%}
+/* titles on the photo — full screen, no boxes */
+#cvT,#fnT{position:fixed;left:0;right:0;top:19vh;text-align:center;pointer-events:none;transition:opacity .8s}
+#cvT.hide{opacity:0}
+#cvT .a{font:400 min(9.4vh,20vw)/.92 Anton,sans-serif;letter-spacing:.3vh;color:#1a0d00;display:block}
+#fnT .a{font:400 min(9.8vh,21vw)/.9 Anton,sans-serif;letter-spacing:.3vh;color:#1a0d00}
+#fnT .b{font:italic 700 min(2.6vh,5.4vw) 'Cormorant Garamond',serif;color:#1a0d00;margin-top:1.4vh}
+/* laptop / wide screens: picture fills the screen, title sits on the sky at the left */
+@media (min-aspect-ratio:1/1){#pbImg{object-position:50% 82%}#cvT,#fnT{left:6vw;right:auto;top:15vh;text-align:left}#cvT .a,#fnT .a{font-size:15vh}#fnT .b{font-size:4vh}}
 #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #stage{position:relative;width:1080px;height:1920px;flex:none}
 canvas.fx{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:30}
@@ -28,23 +42,11 @@ canvas.fx{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-even
 @keyframes foilA{to{background-position:-220% 0}}
 .cream{color:#fff6e3;text-shadow:0 3px 14px rgba(60,10,0,.6)}
 /* ===== cover ===== */
-#cv{overflow:hidden;background:#ffd224}
-#cvWrap{position:absolute;inset:0;transform-origin:56% 78%;animation:kb 18s ease-in-out infinite alternate;transition:transform 1.4s cubic-bezier(.6,0,.4,1)}
-@keyframes kb{0%{transform:scale(1)}100%{transform:scale(1.12) translate(-1%,-1.5%)}}
-#cv.go #cvWrap{animation:none;transform:scale(3)}
-#cvImg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.35) saturate(.6);transition:filter 3s ease-out}
-#cv.lit #cvImg{filter:none}
-#cvSun{position:absolute;left:236px;top:1127px;width:740px;height:740px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,248,200,.9),rgba(255,190,60,.35) 55%,transparent);mix-blend-mode:screen;opacity:0;transition:opacity 3s}
-#cv.lit #cvSun{opacity:1;animation:sunp 3.5s ease-in-out infinite}
-@keyframes sunp{50%{transform:scale(1.1);opacity:.75}}
-#cvRays{position:absolute;left:-460px;top:500px;width:2000px;height:2000px;background:repeating-conic-gradient(from 0deg,rgba(255,250,210,.22) 0 3deg,transparent 3deg 12deg);-webkit-mask:radial-gradient(closest-side,#000 8%,transparent 60%);mask:radial-gradient(closest-side,#000 8%,transparent 60%);mix-blend-mode:screen;animation:spin 60s linear infinite;opacity:0;transition:opacity 3s}
-#cv.lit #cvRays{opacity:1}
+#cv{overflow:visible}
 .bird{position:absolute;left:-80px;width:60px;height:30px;animation:fly linear infinite}
 .bird g{animation:flap .42s ease-in-out infinite alternate;transform-origin:30px 15px}
-@keyframes fly{0%{transform:translate(0,0)}50%{transform:translate(630px,-40px)}100%{transform:translate(1260px,10px)}}
+@keyframes fly{0%{transform:translate(0,0)}50%{transform:translate(55vw,-40px)}100%{transform:translate(calc(100vw + 160px),10px)}}
 @keyframes flap{to{transform:scaleY(-.6)}}
-#cvT{position:absolute;left:0;right:0;top:250px;text-align:center}
-#cvT .a{font:400 220px/.92 Anton,sans-serif;letter-spacing:6px;color:#1a0d00;display:block}
 #cvT .a span{display:inline-block;opacity:0;transform:translateY(-140px) scale(1.4)}
 #cvT .a span.in{animation:drop .7s cubic-bezier(.3,1.5,.5,1) forwards}
 @keyframes drop{to{opacity:1;transform:none}}
@@ -127,11 +129,9 @@ canvas.fx{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-even
 #inv{font:italic 600 54px/1.5 'Cormorant Garamond',serif;color:#3a1c0a;white-space:pre-line;margin-top:40px;min-height:720px}
 #isg{font:800 28px Cinzel,serif;letter-spacing:8px;color:#a0661a;opacity:0;transition:opacity 1s}
 /* ===== finale ===== */
-#fn{overflow:hidden;background:#ffd224}
-#fnImg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 14s ease-in-out infinite alternate}
-#fnT{position:absolute;left:0;right:0;top:240px;text-align:center}
-#fnT .a{font:400 230px/.9 Anton,sans-serif;letter-spacing:6px;color:#1a0d00;opacity:0;transform:scale(2.4);filter:blur(10px);transition:opacity .6s,transform .9s cubic-bezier(.2,1.3,.4,1),filter .6s}
-#fnT .b{font:italic 700 58px 'Cormorant Garamond',serif;color:#1a0d00;margin-top:26px;opacity:0;transition:opacity 1s}
+#fn{overflow:visible}
+#fnT .a{opacity:0;transform:scale(2.4);filter:blur(10px);transition:opacity .6s,transform .9s cubic-bezier(.2,1.3,.4,1),filter .6s}
+#fnT .b{opacity:0;transition:opacity 1s}
 #fnT .on{opacity:1!important;transform:none!important;filter:none!important}
 #share{position:absolute;left:290px;top:1650px;width:500px;padding:26px 0;text-align:center;font:400 42px Anton,sans-serif;letter-spacing:6px;color:#1a0d00;background:linear-gradient(180deg,#fff6d0,#ffd36b 50%,#e0a030);border-radius:60px;box-shadow:0 0 0 4px #1a0d00,0 0 50px rgba(255,220,120,.7);opacity:0;pointer-events:none;transition:opacity .8s;z-index:35}
 #share.on{opacity:1;pointer-events:auto}
@@ -159,7 +159,14 @@ canvas.fx{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-even
   <svg id="hills" viewBox="0 0 1000 160" preserveAspectRatio="none"><path d="M0 160 V95 Q120 50 260 80 T520 70 T780 85 T1000 60 V160Z" fill="#3a0e05" opacity=".7"/><path d="M0 160 V120 Q160 90 330 112 T660 105 T1000 100 V160Z" fill="#1e0703"/></svg>
   <canvas id="gl"></canvas>
 </div>
-<div id="tint"></div>
+<div id="pb" class="on"><div id="pbWrap"><img id="pbImg" alt=""></div>
+  <svg class="bird" style="top:17%;animation-duration:14s;animation-delay:-2s"><use href="#bird"/></svg>
+  <svg class="bird" style="top:24%;width:44px;height:22px;animation-duration:18s;animation-delay:-9s"><use href="#bird"/></svg>
+  <svg class="bird" style="top:32%;width:34px;height:17px;animation-duration:22s;animation-delay:-5s"><use href="#bird"/></svg>
+  <svg class="bird" style="top:20%;width:28px;height:14px;animation-duration:25s;animation-delay:-15s"><use href="#bird"/></svg>
+</div>
+<div id="cvT"><div class="a" id="cvA"></div></div>
+<div id="fnT"><div class="a" id="fa">HAPPY<br>MEN'S<br>DAY</div><div class="b" id="fb">today, and every single day</div></div>
 <div id="start"></div>
 <div id="replay">↻ REPLAY</div>
 <audio id="song" preload="auto" loop></audio>
@@ -167,12 +174,6 @@ canvas.fx{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-even
 
 <!-- COVER -->
 <div class="scene on" id="cv">
-  <div id="cvWrap"><img id="cvImg" alt=""><div id="cvRays"></div><div id="cvSun"></div></div>
-  <svg class="bird" style="top:330px;animation-duration:14s;animation-delay:-2s"><use href="#bird"/></svg>
-  <svg class="bird" style="top:470px;width:44px;height:22px;animation-duration:18s;animation-delay:-9s"><use href="#bird"/></svg>
-  <svg class="bird" style="top:620px;width:34px;height:17px;animation-duration:22s;animation-delay:-5s"><use href="#bird"/></svg>
-  <svg class="bird" style="top:390px;width:28px;height:14px;animation-duration:25s;animation-delay:-15s"><use href="#bird"/></svg>
-  <div id="cvT"><div class="a" id="cvA"></div></div>
   <div id="cvBtn">OPEN ▶</div>
 </div>
 
@@ -231,8 +232,6 @@ canvas.fx{position:absolute;left:0;top:0;width:1080px;height:1920px;pointer-even
 
 <!-- FINALE -->
 <div class="scene" id="fn">
-  <img id="fnImg" alt="">
-  <div id="fnT"><div class="a" id="fa">HAPPY<br>MEN'S DAY</div><div class="b" id="fb">today, and every single day</div></div>
 </div>
 
 <div id="share">SHARE THE LOVE</div>
@@ -253,7 +252,7 @@ const ORDER = {
 };
 /* ========================================================= */
 const $ = id => document.getElementById(id), wait = ms => new Promise(r => setTimeout(r, ms)), on = id => $(id).classList.add("on"), off = id => $(id).classList.remove("on");
-$("cvImg").src = $("fnImg").src = ORDER.photo; $("isg").textContent = ORDER.sign;
+$("pbImg").src = ORDER.photo; $("isg").textContent = ORDER.sign;
 $("cvA").innerHTML = ["HAPPY", "MEN'S", "DAY"].map(w => `<div style="white-space:nowrap">${[...w].map(c => `<span>${c}</span>`).join("")}</div>`).join("");
 /* golden dust */
 const gl = $("gl").getContext("2d"); let GW = 0, GH = 0, GL = [];
@@ -286,7 +285,6 @@ function waitTap(t) { return new Promise(res => { hint(t); tapCb = () => { hint(
 function flash(a = .7) { $("flash").style.opacity = a; setTimeout(() => $("flash").style.opacity = 0, 260); }
 $("wrap").addEventListener("pointerdown", e => { const [x, y] = stagePt(e); if (!scratching) sparks(x, y, 16, 7); if (tapCb) tapCb(); });
 async function type(el, txt, ms) { for (let i = 1; i <= txt.length; i++) { el.textContent = txt.slice(0, i) + (i < txt.length ? "|" : ""); await wait(ms); } }
-function tint(bg) { const t = $("tint"); if (bg) { t.style.background = bg; t.classList.add("on"); } else t.classList.remove("on"); }
 /* ===== scratch card engine ===== */
 const sc = $("scr"), sx = sc.getContext("2d"); let scratching = false, down = false, scrDone = null, lastPt = null, moves = 0;
 function paintFoil(n) {
@@ -312,7 +310,7 @@ sc.addEventListener("pointermove", e => { if (!scratching || !down) return; cons
 addEventListener("pointerup", () => { down = false; lastPt = null; if (scratching) checkClear(); });
 function waitScratch() { return new Promise(res => { scratching = true; moves = 0; scrDone = res; }); }
 /* cover plays on its own */
-(async () => { await wait(300); $("cv").classList.add("lit"); tint("linear-gradient(#ffd224 84%,#000 84%)"); motes = .3; await wait(1200);
+(async () => { await wait(300); $("pb").classList.add("lit"); motes = .3; await wait(1200);
   const sp = [...$("cvA").querySelectorAll("span")]; for (const s of sp) { s.classList.add("in"); await wait(90); } await wait(500); sparks(540, 420, 160, 16, ["#ffffff", "#fff6c8", "#ffe08a"]); await wait(700); on("cvBtn"); })();
 /* ===== surprise 2 — gift box ===== */
 async function giftBox() {
@@ -355,8 +353,8 @@ async function loveMeter() {
 }
 /* ================= THE STORY ================= */
 async function story() {
-  $("start").style.display = "none"; off("cvBtn"); flash(.7); $("cv").classList.add("go"); motes = 0;
-  await wait(1100); flash(1); tint(); off("cv"); await wait(800);
+  $("start").style.display = "none"; off("cvBtn"); flash(.7); $("pb").classList.add("go"); motes = 0;
+  await wait(1100); flash(1); off("pb"); off("cv"); $("cvT").classList.add("hide"); setTimeout(() => $("pb").classList.remove("go"), 1500); await wait(800);
   // scratch cards
   await document.fonts.ready; on("sS"); $("sS").style.pointerEvents = "auto";
   { const [ic, kk, tt, mm, ff] = ORDER.scratch;
@@ -380,7 +378,7 @@ async function story() {
   await waitTap("Tap · the grand finale");
   off("sE"); await wait(800);
   // finale on the moving picture
-  tint("linear-gradient(#ffd224 84%,#000 84%)"); on("fn"); flash(1); await wait(800); on("fa"); sparks(540, 460, 220, 20, ["#ffffff", "#fff6c8", "#ffe08a"]); confetti(540, 1700, 200); fwOn = true; motes = .3;
+  on("pb"); on("fn"); flash(1); await wait(800); on("fa"); sparks(540, 460, 220, 20, ["#ffffff", "#fff6c8", "#ffe08a"]); confetti(540, 1700, 200); fwOn = true; motes = .3;
   await wait(1400); on("fb"); await wait(1000); on("share"); await wait(6000); fwOn = false; $("replay").style.display = "block";
 }
 $("start").addEventListener("click", () => { const a = $("song"); a.src = ORDER.song; a.play().catch(() => {}); story(); }, { once: true });
